@@ -1,0 +1,87 @@
+class Nodo: #Contém numero, cor e ponteiro para o próximo nodo
+    def __init__(self, numero, cor):
+        self.numero = numero
+        self.cor = cor
+        self.proximo = None
+
+class ListaEncadeada:
+    def __init__(self): #head como none
+        self.head = None
+
+    def inserirSemPrioridade(self, nodo): #Insere um nodo no final da lista
+        if self.head is None:
+            self.head = nodo
+        else:
+            atual = self.head
+            while atual.proximo is not None:
+                atual = atual.proximo
+            atual.proximo = nodo
+
+    def inserirComPrioridade(self, nodo): #Insere um nodo antes dos nodos V eapós os nodos com A
+        if self.head is None or self.head.cor == "V":
+            nodo.proximo = self.head
+            self.head = nodo
+        else:
+            atual = self.head
+            while atual.proximo is not None and atual.proximo.cor == "A":
+                atual = atual.proximo
+            nodo.proximo = atual.proximo
+            atual.proximo = nodo
+
+    def inserir(self): #Solicitação da cor e numero do paciente
+        cor = input("Informe a cor do cartão (A / V): ").strip().upper()
+        while cor not in ['A', 'V']:
+            cor = input("Erro. Digite a cor do cartão (A ou V): ").strip().upper()
+
+        numero = int(input("Informe o número do cartão: "))
+
+        novo_nodo = Nodo(numero, cor)
+
+        if self.head is None:
+            self.head = novo_nodo
+        elif cor == 'V':
+            self.inserirSemPrioridade(novo_nodo)
+        elif cor == 'A':
+            self.inserirComPrioridade(novo_nodo)
+
+    def imprimirListaEspera(self): #impressão de todos os nodos da lista
+        if self.head is None:
+            print("A lista de espera está sem pacientes")
+        else:
+            atual = self.head
+            while atual is not None:
+                print(f"Cartão Número: {atual.numero}, Cor: {atual.cor}")
+                atual = atual.proximo
+
+    def atenderPaciente(self): #Chama o primeiro paciente da lista
+        if self.head is None:
+            print("Não há pacientes na fila para atendimento.")
+        else:
+            paciente_atendido = self.head
+            self.head = self.head.proximo
+            print(f"Atendendo o paciente com o cartão número: {paciente_atendido.numero}")
+
+def menu(): #Escolha do usuário
+    lista = ListaEncadeada()
+    while True:
+        print("\nMenu:")
+        print("1 - Adicionar paciente à fila")
+        print("2 - Mostrar pacientes na fila")
+        print("3 - Chamar paciente")
+        print("4 - Sair")
+        opcao = input("Escolha uma opção: ")
+
+        if opcao == '1':
+            lista.inserir()
+        elif opcao == '2':
+            lista.imprimirListaEspera()
+        elif opcao == '3':
+            lista.atenderPaciente()
+        elif opcao == '4':
+            print("Encerrando o programa...")
+            break
+        else:
+            print("Opção inválida, por favor escolha novamente.")
+
+if __name__ == "__main__":
+    menu()
